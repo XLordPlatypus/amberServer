@@ -1,0 +1,23 @@
+volumes:
+  db_data:
+
+services:
+  bun:
+    container_name: amberServer
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      DB_HOST: amberDB
+
+  db:
+    container_name: amberDB
+    image: postgres
+    ports:
+      - '5432:5432'
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
