@@ -20,7 +20,3 @@ export const dbConnect = () => {
             console.error('DB Connection failed! ' + e)
         })
 }
-
-export const dbSetup = async () => {
-    console.log(await db.execute('select 1'))
-}

@@ -1,35 +1,49 @@
-import {getAllSnakes, getSnake} from "../services/snakeService";
+import {createSnake, getAllSnakes, getSnake, updateSnake} from "../services/snakeService";
+import {Elysia} from "elysia";
+import {Snake} from "../db/schema/snakeSchema";
 
+const snakeRouter = new Elysia({ prefix: '/snake' })
 
-// TODO: Statuscodes?
-const getAll = () => {
+snakeRouter.get('/', async ({ set }) => {
     try {
-        return { success: true, data: getAllSnakes() }
+        return { success: true, data: await getAllSnakes() }
     } catch (e) {
-        return { success: false, data: e }
+        set.status = 500
+        return { success: false, data: e?.toString() }
     }
-}
+})
 
-const get = (id: number) => {
+snakeRouter.get('/:id', async ({ params, set }) => {
     try {
-        return getSnake(id)
+        const id = Number(params.id)
+        return { success: true, data: await getSnake(id) }
     } catch (e) {
-
+        set.status = 500
+        return { success: false, data: e?.toString() }
     }
-}
+})
 
-const create = () => {
+snakeRouter.post('/', async ({ body, set }) => {
     try {
-
+        const newSnake = body as Snake
+        await createSnake(newSnake)
+        set.status = 201
+        return { success: true, data: {} }
     } catch (e) {
-
+        set.status = 500
+        return { success: false, data: e?.toString() }
     }
-}
+})
 
-const update = () => {
+snakeRouter.put('/', async ({ body, set }) => {
     try {
-
+        const snakeToUpdate = body as Snake
+        await updateSnake(snakeToUpdate)
+        return { success: true, data: {} }
     } catch (e) {
-
+        set.status = 500
+        return { success: false, data: e?.toString() }
     }
-}
+})
+
+export default snakeRouter;
